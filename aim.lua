@@ -1,52 +1,18 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-
-local aimEnabled = false
-local AIM_STRENGTH = 0.4
-local AIM_RADIUS = 150
-
--- SUPER SIMPLES - SEM NENHUMA GUI
-game:GetService("UserInputService").InputBegan:Connect(function(input)
-\tif input.KeyCode == Enum.KeyCode.RightControl then
-\t\taimEnabled = not aimEnabled
-\t\tprint("Aim Assist:", aimEnabled and "ATIVADO" or "DESATIVADO")
-\tend
+local p=game:GetService("Players").LocalPlayer
+local cam=workspace.CurrentCamera
+local aim= false
+game:GetService("UserInputService").InputBegan:Connect(function(k)
+if k.KeyCode==Enum.KeyCode.RightControl then aim=not aim print("Aim:",aim and"ON"or"OFF")end
 end)
-
--- AIM LOOP MÍNIMO
-RunService.RenderStepped:Connect(function()
-\tif aimEnabled then
-\t\tlocal closestPlayer = nil
-\t\tlocal shortestDistance = AIM_RADIUS
-\t\t
-\t\tfor _, otherPlayer in pairs(Players:GetPlayers()) do
-\t\t\tif otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("Head") then
-\t\t\t\tlocal head = otherPlayer.Character.Head
-\t\t\t\tlocal screenPos, onScreen = Camera:WorldToViewportPoint(head.Position)
-\t\t\t\t
-\t\t\t\tif onScreen then
-\t\t\t\t\tlocal screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-\t\t\t\t\tlocal distance = (Vector2.new(screenPos.X, screenPos.Y) - screenCenter).Magnitude
-\t\t\t\t\t
-\t\t\t\t\tif distance < shortestDistance then
-\t\t\t\t\t\tshortestDistance = distance
-\t\t\t\t\t\tclosestPlayer = otherPlayer
-\t\t\t\t\tend
-\t\t\t\tend
-\t\t\tend
-\t\tend
-\t\t
-\t\tif closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("Head") then
-\t\t\tlocal headPos = closestPlayer.Character.Head.Position
-\t\t\tlocal targetCFrame = CFrame.lookAt(Camera.CFrame.Position, headPos)
-\t\t\tCamera.CFrame = Camera.CFrame:Lerp(targetCFrame, AIM_STRENGTH)
-\t\tend
-\tend
-end)
-
-print("=== AIM ASSIST DELTA ===")
-print("APERTE RIGHT CONTROL pra ligar/desligar")
-print("Status no F12 (console)")
+game:GetService("RunService").RenderStepped:Connect(function()
+if aim then
+local t=nil;d=150;c=Vector2.new(cam.ViewportSize.X/2,cam.ViewportSize.Y/2)
+for _,p2 in p:GetPlayers()do
+if p2~=p and p2.Character and p2.Character.Head then
+local s,on=cam:WorldToViewportPoint(p2.Character.Head.Position)
+if on and(s.Vector2-s-c).Magnitude<d then d=(s.Vector2-s-c).Magnitude t=p2 end
+end end
+if t and t.Character.Head then
+cam.CFrame=cam.CFrame:Lerp(CFrame.lookAt(cam.CFrame.Position,t.Character.Head.Position),.4)
+end end end)
+print("Ctrl Direito=Toggle")
