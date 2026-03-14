@@ -2,6 +2,7 @@
     ╔══════════════════════════════════════════════╗
     ║         Desenvolvedor: BREONN MODZ           ║
     ║         Jogo: Roblox (Rivals/Outros)         ║
+    ║         ofuscate by breonn modz              ║
     ║         Key: monite                          ║
     ╚══════════════════════════════════════════════╝
 ]]
